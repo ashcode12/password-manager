@@ -1,17 +1,23 @@
 const express = require('express');
 const crypto = require('crypto');
+const admin = require('firebase-admin');
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-const passwords = [];
+// Firebase setup
+const serviceAccount = require('./path-to-your-service-account-key.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+const db = admin.firestore();
+const passwordsCollection = db.collection('passwords');
 
-// Encryption key and algorithm (securely stored in production)
-const ENCRYPTION_KEY = crypto.randomBytes(32); // 256-bit key
-const IV_LENGTH = 16; // Initialization vector length
+// Encryption setup
+const ENCRYPTION_KEY = crypto.randomBytes(32);
+const IV_LENGTH = 16;
 
-// Encrypt function
 function encrypt(text) {
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
@@ -20,7 +26,6 @@ function encrypt(text) {
   return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
-// Decrypt function
 function decrypt(text) {
   const textParts = text.split(':');
   const iv = Buffer.from(textParts.shift(), 'hex');
@@ -31,43 +36,43 @@ function decrypt(text) {
   return decrypted.toString();
 }
 
-// Validate function
 const validatePasswordInput = (name, password) => {
   return name && password && name.trim() !== '' && password.trim() !== '';
 };
 
-// Route to add a password with encryption
-app.post('/add-password', (req, res) => {
-    const { name, password } = req.body;
-    if (validatePasswordInput(name, password)) {
-      const encryptedPassword = encrypt(password);
-      passwords.push({ name, password: encryptedPassword });
-      res.status(201).json({ message: 'Password added successfully' });
-    } else {
-      res.status(400).json({ message: 'Invalid input: name and password cannot be empty' });
-    }
-  });
-  
+// Route to add a password to Firestore
+app.post('/add-password', async (req, res) => {
+  const { name, password } = req.body;
+  if (validatePasswordInput(name, password)) {
+    const encryptedPassword = encrypt(password);
+    await passwordsCollection.doc(name).set({ name, password: encryptedPassword });
+    res.status(201).json({ message: 'Password added successfully' });
+  } else {
+    res.status(400).json({ message: 'Invalid input: name and password cannot be empty' });
+  }
+});
 
-// Route to retrieve a specific password with decryption
-app.get('/get-password/:name', (req, res) => {
+// Route to retrieve a specific password from Firestore
+app.get('/get-password/:name', async (req, res) => {
   const { name } = req.params;
-  const entry = passwords.find(p => p.name === name);
-  if (entry) {
-    const decryptedPassword = decrypt(entry.password);
-    res.status(200).json({ name: entry.name, password: decryptedPassword });
+  const doc = await passwordsCollection.doc(name).get();
+  if (doc.exists) {
+    const encryptedPassword = doc.data().password;
+    const decryptedPassword = decrypt(encryptedPassword);
+    res.status(200).json({ name, password: decryptedPassword });
   } else {
     res.status(404).json({ message: `No password found for '${name}'` });
   }
 });
 
 // Route to list all stored passwords (names only for security)
-app.get('/list-passwords', (req, res) => {
-  if (passwords.length > 0) {
-    const passwordNames = passwords.map(p => ({ name: p.name }));
-    res.status(200).json(passwordNames);
-  } else {
+app.get('/list-passwords', async (req, res) => {
+  const snapshot = await passwordsCollection.get();
+  if (snapshot.empty) {
     res.status(200).json({ message: 'No passwords stored yet' });
+  } else {
+    const passwordNames = snapshot.docs.map(doc => ({ name: doc.id }));
+    res.status(200).json(passwordNames);
   }
 });
 

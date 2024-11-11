@@ -15,3 +15,7 @@ Thumbs.db
 
 # VS Code settings (optional)
 .vscode/
+
+# Firebase service account key
+config/pmdevops-b855db43441d.json
+

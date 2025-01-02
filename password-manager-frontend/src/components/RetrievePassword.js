@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { getPassword } from '../services/apiService';
+import axios from 'axios';
 
-function RetrievePassword() {
+const RetrievePassword = () => {
   const [name, setName] = useState('');
-  const [passwordData, setPasswordData] = useState(null);
+  const [result, setResult] = useState('');
   const [error, setError] = useState('');
 
-  const handleRetrieve = async () => {
+  const handleSearch = async () => {
     try {
-      const data = await getPassword(name);
-      setPasswordData(data);
+      const response = await axios.get(`http://localhost:3000/get-password/${name}`);
+      setResult(response.data.password);
       setError('');
     } catch (error) {
-      setError('Password not found or an error occurred');
-      setPasswordData(null);
+      setError(error.response?.data?.message || 'An error occurred');
+      setResult('');
     }
   };
 
@@ -22,20 +22,15 @@ function RetrievePassword() {
       <h2>Retrieve Password</h2>
       <input
         type="text"
-        placeholder="Enter name"
+        placeholder="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <button onClick={handleRetrieve}>Retrieve</button>
-      {passwordData && (
-        <div>
-          <p><strong>Name:</strong> {passwordData.name}</p>
-          <p><strong>Password:</strong> {passwordData.password}</p>
-        </div>
-      )}
-      {error && <p>{error}</p>}
+      <button onClick={handleSearch}>Search</button>
+      {result && <p>Password: {result}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
-}
+};
 
 export default RetrievePassword;

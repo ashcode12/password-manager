@@ -1,79 +1,72 @@
 # API Documentation
 
-This file provides detailed documentation for the API endpoints implemented in this project. Each endpoint is designed to handle password storage, retrieval, and listing functionalities.
+## Base URL
+`http://localhost:3000`
 
 ---
 
-## API Endpoints
-
 ### 1. Add Password
-
 - **Endpoint**: `POST /add-password`
-- **Description**: Adds a password entry with encryption before storing it in Firestore.
+- **Description**: Encrypts and adds a password entry to the local JSON storage.
 - **Request Body**:
   ```json
   {
     "name": "exampleSite",
-    "password": "mySecurePassword123"
+    "password": "securePassword123"
   }
   ```
 - **Response**:
-  - **201**: Password added successfully with the message:
+  - **201**: Password added successfully.
     ```json
     {
       "message": "Password for \"exampleSite\" added successfully"
     }
     ```
-  - **400**: Invalid input if `name` or `password` is empty or does not meet validation requirements. Returns:
+  - **400**: Invalid input.
     ```json
     {
-      "message": "Invalid input: name must have at least 3 characters, and password cannot be empty"
+      "message": "Invalid input: Name must have at least 3 characters, and password cannot be empty."
     }
     ```
 
+---
 
 ### 2. Retrieve Password
-
 - **Endpoint**: `GET /get-password/:name`
-- **Description**: Retrieves and decrypts a stored password by the specified `name`.
-- **URL Parameters**:
-  - `name` (string): Name of the password entry to retrieve.
+- **Description**: Retrieves and decrypts the password for the given name.
 - **Response**:
-  - **200**: Returns the password in plaintext if found:
+  - **200**: Returns the password.
     ```json
     {
       "name": "exampleSite",
-      "password": "mySecurePassword123"
+      "password": "securePassword123"
     }
     ```
-  - **404**: No password found for the given `name`. Returns:
+  - **404**: No entry found for the given name.
     ```json
     {
-      "message": "No password entry found for \"exampleSite\". Please check the name and try again."
+      "message": "No password entry found for \"exampleSite\"."
     }
     ```
 
+---
 
 ### 3. List Passwords
-
 - **Endpoint**: `GET /list-passwords`
-- **Description**: Lists all stored passwords by name only, without showing the actual passwords.
+- **Description**: Lists all stored passwords (names only).
 - **Response**:
-  - **200**: Returns a list of all password names if entries are available:
+  - **200**: Returns a list of names.
     ```json
     [
-      {
-        "name": "exampleSite"
-      }
+      { "name": "exampleSite" }
     ]
     ```
-  - **200**: If no passwords are stored, returns:
+  - **200**: No passwords stored.
     ```json
     {
-      "message": "No passwords stored yet"
+      "message": "No passwords stored yet."
     }
     ```
-
 
 ---
 
@@ -88,16 +81,18 @@ This file provides detailed documentation for the API endpoints implemented in t
 
   {
     "name": "exampleSite",
-    "password": "mySecurePassword123"
+    "password": "securePassword123"
   }
   ```
 
 - **Response**:
   ```json
   {
-    "message": "Password added successfully"
+    "message": "Password for \"exampleSite\" added successfully"
   }
   ```
+
+---
 
 ### Retrieve Password Example
 
@@ -110,9 +105,11 @@ This file provides detailed documentation for the API endpoints implemented in t
   ```json
   {
     "name": "exampleSite",
-    "password": "mySecurePassword123"
+    "password": "securePassword123"
   }
   ```
+
+---
 
 ### List Passwords Example
 
@@ -124,9 +121,7 @@ This file provides detailed documentation for the API endpoints implemented in t
 - **Response**:
   ```json
   [
-    {
-      "name": "exampleSite"
-    }
+    { "name": "exampleSite" }
   ]
   ```
 
@@ -137,6 +132,4 @@ This file provides detailed documentation for the API endpoints implemented in t
 - All responses include appropriate status codes and messages to indicate success or errors.
 - The application ensures that passwords are securely encrypted before storage and decrypted upon retrieval.
 - All inputs are validated to ensure `name` has at least 3 characters and `password` is not empty.
-
-
----
+```

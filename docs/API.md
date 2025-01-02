@@ -136,6 +136,41 @@
 
 ---
 
+   ### 4. Generate Password
+
+   - **Endpoint**: `POST /generate-password`
+   - **Description**: Generates a random password based on user-provided criteria.
+   - **Request Body**:
+     ```json
+     {
+       "length": 12,
+       "includeNumbers": true,
+       "includeSymbols": true,
+       "includeUppercase": true,
+       "includeLowercase": true
+     }
+     ```
+   - **Response**:
+     - **200**: Returns the generated password:
+       ```json
+       {
+         "password": "&airC#yY2k>i"
+       }
+       ```
+     - **400**: If invalid input is provided:
+       ```json
+       {
+         "message": "Invalid length. Please provide a length between 1 and 128."
+       }
+       ```
+     - **500**: For any server error:
+       ```json
+       {
+         "message": "An error occurred while generating the password."
+       }
+       ```
+   ```
+
 ## Notes
 
 - All responses include appropriate status codes and messages to indicate success or errors.

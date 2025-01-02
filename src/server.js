@@ -120,3 +120,52 @@ app.listen(PORT, () => {
 
 // Export the app for testing
 module.exports = app;
+
+// Password Generator
+function generatePassword({ length, includeNumbers, includeSymbols, includeUppercase, includeLowercase }) {
+  const numbers = "0123456789";
+  const symbols = "!@#$%^&*()_+[]{}|;:',.<>?";
+  const lowercase = "abcdefghijklmnopqrstuvwxyz";
+  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  let characterPool = "";
+  if (includeNumbers) characterPool += numbers;
+  if (includeSymbols) characterPool += symbols;
+  if (includeLowercase) characterPool += lowercase;
+  if (includeUppercase) characterPool += uppercase;
+
+  if (!characterPool) {
+    throw new Error("At least one character type must be selected");
+  }
+
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characterPool.length);
+    password += characterPool[randomIndex];
+  }
+  return password;
+}
+
+// Endpoint for Password Generation
+app.post('/generate-password', (req, res) => {
+  try {
+    const { length, includeNumbers, includeSymbols, includeUppercase, includeLowercase } = req.body;
+
+    if (!length || length < 1 || length > 128) {
+      return res.status(400).json({ message: "Invalid length. Please provide a length between 1 and 128." });
+    }
+
+    const password = generatePassword({
+      length,
+      includeNumbers,
+      includeSymbols,
+      includeUppercase,
+      includeLowercase,
+    });
+
+    res.status(200).json({ password });
+  } catch (error) {
+    console.error("Error generating password:", error);
+    res.status(500).json({ message: error.message });
+  }
+});

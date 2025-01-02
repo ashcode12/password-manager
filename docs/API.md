@@ -1,3 +1,6 @@
+### **Updated API.md**
+
+```markdown
 # API Documentation
 
 ## Base URL
@@ -19,13 +22,19 @@
   - **201**: Password added successfully.
     ```json
     {
-      "message": "Password for \"exampleSite\" added successfully"
+      "message": "Password for 'exampleSite' added successfully"
     }
     ```
   - **400**: Invalid input.
     ```json
     {
       "message": "Invalid input: Name must have at least 3 characters, and password cannot be empty."
+    }
+    ```
+  - **409**: Duplicate username.
+    ```json
+    {
+      "message": "Password for 'exampleSite' already exists. Use a different name."
     }
     ```
 
@@ -45,7 +54,7 @@
   - **404**: No entry found for the given name.
     ```json
     {
-      "message": "No password entry found for \"exampleSite\"."
+      "message": "No password entry found for 'exampleSite'."
     }
     ```
 
@@ -88,7 +97,7 @@
 - **Response**:
   ```json
   {
-    "message": "Password for \"exampleSite\" added successfully"
+    "message": "Password for 'exampleSite' added successfully"
   }
   ```
 
@@ -132,4 +141,5 @@
 - All responses include appropriate status codes and messages to indicate success or errors.
 - The application ensures that passwords are securely encrypted before storage and decrypted upon retrieval.
 - All inputs are validated to ensure `name` has at least 3 characters and `password` is not empty.
+- Duplicate usernames are not allowed and will trigger a `409 Conflict` response.
 ```

@@ -1,6 +1,5 @@
 ### **Updated API.md**
 
-```markdown
 # API Documentation
 
 ## Base URL
@@ -79,6 +78,36 @@
 
 ---
 
+### 4. Generate Password (New)
+- **Endpoint**: `POST /generate-password`
+- **Description**: Generates a random password based on provided options.
+- **Request Body**:
+  ```json
+  {
+    "length": 12, // This is the default length
+    "includeNumbers": true,
+    "includeSymbols": true,
+    "includeUppercase": true,
+    "includeLowercase": true
+  }
+  ```
+- **Response**:
+  - **200**: Password generated successfully.
+    ```json
+    {
+      "password": "&airC#yY2k>i"
+    }
+    ```
+  - **400**: Invalid length or criteria missing.
+    ```json
+    {
+      "message": "Invalid length. Please provide a length between 1 and 128."
+    }
+    ```
+  - **500**: Server error.
+
+---
+
 ## Sample Request and Response
 
 ### Add Password Example
@@ -136,40 +165,30 @@
 
 ---
 
-   ### 4. Generate Password
+### Generate Password Example
 
-   - **Endpoint**: `POST /generate-password`
-   - **Description**: Generates a random password based on user-provided criteria.
-   - **Request Body**:
-     ```json
-     {
-       "length": 12,
-       "includeNumbers": true,
-       "includeSymbols": true,
-       "includeUppercase": true,
-       "includeLowercase": true
-     }
-     ```
-   - **Response**:
-     - **200**: Returns the generated password:
-       ```json
-       {
-         "password": "&airC#yY2k>i"
-       }
-       ```
-     - **400**: If invalid input is provided:
-       ```json
-       {
-         "message": "Invalid length. Please provide a length between 1 and 128."
-       }
-       ```
-     - **500**: For any server error:
-       ```json
-       {
-         "message": "An error occurred while generating the password."
-       }
-       ```
-   ```
+- **Request**:
+  ```http
+  POST /generate-password
+  Content-Type: application/json
+
+  {
+    "length": 12,
+    "includeNumbers": true,
+    "includeSymbols": true,
+    "includeUppercase": true,
+    "includeLowercase": true
+  }
+  ```
+
+- **Response**:
+  ```json
+  {
+    "password": "&airC#yY2k>i"
+  }
+  ```
+
+---
 
 ## Notes
 
@@ -177,4 +196,4 @@
 - The application ensures that passwords are securely encrypted before storage and decrypted upon retrieval.
 - All inputs are validated to ensure `name` has at least 3 characters and `password` is not empty.
 - Duplicate usernames are not allowed and will trigger a `409 Conflict` response.
-```
+- The password generator uses secure randomness via Node.js `crypto.randomBytes`.

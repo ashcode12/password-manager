@@ -1,18 +1,20 @@
 ### **Updated README.md**
 
-```markdown
 # Password Manager - DevOps Project
 
-## Version 1.0
+## Version 2.0
 
 ### Overview
-This is the first completed version of the Password Manager application. It includes basic functionality for managing passwords via a web interface with a React frontend and a Node.js backend.
+This is the second version of the Password Manager application. It introduces a new password generator feature while maintaining the existing password management functionalities.
 
-### Features
+### Features in Version 2.0
 1. Add Password: Add a new username and encrypted password.
 2. Retrieve Password: Retrieve a stored password by username.
 3. List Passwords: View a list of stored usernames.
-4. Validation:
+4. Password Generator: Generate a secure password with customizable options:
+   - Password length (1 to 128 characters)
+   - Include numbers, symbols, uppercase, and lowercase characters
+5. Validation:
    - Ensures passwords are encrypted before storing.
    - Checks for duplicate usernames.
    - Handles invalid inputs gracefully.
@@ -52,6 +54,23 @@ This is the first completed version of the Password Manager application. It incl
 
 ---
 
+### API Endpoints
+
+#### Add Password
+- **Endpoint**: `POST /add-password`
+
+#### Retrieve Password
+- **Endpoint**: `GET /get-password/:name`
+
+#### List Passwords
+- **Endpoint**: `GET /list-passwords`
+
+#### Generate Password (New)
+- **Endpoint**: `POST /generate-password`
+- **Description**: Generates a random password based on user-provided criteria.
+
+---
+
 ### 1. Project Phases and Progress
 
 #### Phase 1: Planning and Research
@@ -76,22 +95,10 @@ This is the first completed version of the Password Manager application. It incl
      - Set up GitHub repository with `.gitignore` to exclude sensitive files.
      - Branching strategy: `main`, `dev`, and feature branches for clear project tracking.
 
----
-
-## Backend Progress
-
-### Summary
-The backend for the password manager has been successfully implemented and tested locally. It includes the following features:
-- Password encryption using AES-256-CBC.
-- Local storage of encrypted passwords in a JSON file.
-- API routes for adding, retrieving, and listing passwords.
-
-### Local Testing
-The backend is running locally on `http://localhost:3000`. Endpoints have been tested with `curl`, and all functionalities are working as expected.
-
-### Next Steps
-- Integrate the backend with the frontend using Axios.
-- Migrate the backend to use Firestore on Google Cloud once the local implementation is stable.
+#### Phase 3: Password Generator
+   - Added the `/generate-password` API endpoint.
+   - Implemented secure random password generation using Node.js `crypto.randomBytes`.
+   - Validated user input for length and criteria.
 
 ---
 
@@ -112,4 +119,3 @@ The backend is running locally on `http://localhost:3000`. Endpoints have been t
 2. **[BRANCHING.md](BRANCHING.md)**: Git branching strategy and workflow.
 3. **[API.md](API.md)**: Documentation for API endpoints.
 4. **[SECURITY.md](SECURITY.md)**: Security features and encryption details.
-```

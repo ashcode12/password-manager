@@ -1,9 +1,11 @@
+### **Updated TESTING.md**
+
 # Testing Documentation
 
-## Manual Testing Results for Version 1.0
+## Manual Testing Results for Version 2.0
 
 ### Overview
-This document outlines the testing approach and results for the Password Manager application, including validation for the backend API endpoints.
+This document outlines the testing approach and results for the Password Manager application, including validation for the backend API endpoints and the newly added password generator feature.
 
 ---
 
@@ -119,6 +121,60 @@ This document outlines the testing approach and results for the Password Manager
 
 ---
 
+### Password Generator Test Cases (New)
+1. **Generate a Valid Password**:
+   - **Description**: Verifies a password is generated with valid input.
+   - **Method**: POST `/generate-password`
+   - **Input**:
+     ```json
+     {
+       "length": 12,
+       "includeNumbers": true,
+       "includeSymbols": true,
+       "includeUppercase": true,
+       "includeLowercase": true
+     }
+     ```
+   - **Expected Result**: A 12-character password containing numbers, symbols, uppercase, and lowercase letters.
+   - **Result**: Passed.
+
+2. **Invalid Length**:
+   - **Input**:
+     ```json
+     {
+       "length": 0,
+       "includeNumbers": true
+     }
+     ```
+   - **Expected Result**:
+     ```json
+     {
+       "message": "Invalid length. Please provide a length between 1 and 128."
+     }
+     ```
+   - **Result**: Passed.
+
+3. **No Criteria Selected**:
+   - **Input**:
+     ```json
+     {
+       "length": 12,
+       "includeNumbers": false,
+       "includeSymbols": false,
+       "includeUppercase": false,
+       "includeLowercase": false
+     }
+     ```
+   - **Expected Result**:
+     ```json
+     {
+       "message": "At least one character type must be selected."
+     }
+     ```
+   - **Result**: Passed.
+
+---
+
 ## Edge Cases
 1. **Empty Fields**:
    - Command:
@@ -136,12 +192,12 @@ This document outlines the testing approach and results for the Password Manager
 2. **Duplicate Username**:
    - Prevents duplicates and provides appropriate error messages. Result: Passed.
 
-3. **Case Sensitivity**:
-   - Checked handling of usernames with different cases (e.g., "ExampleSite" vs. "examplesite"). Result: Passed.
+3. **Password Generator with Invalid Inputs**:
+   - Proper validation ensures security and usability. Result: Passed.
 
 ---
 
 ## Notes
 - Manual tests validate endpoint functionality and input handling.
 - Jenkins integration ensures automated tests are executed during the CI/CD process.
-- The frontend requires a page refresh to reflect updates after adding passwords (Version 1.0 limitation).
+- The password generator ensures secure random password generation using Node.js `crypto.randomBytes`.

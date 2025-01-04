@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 
-const GeneratePassword = () => {
+const GeneratePassword = ({ onPasswordGenerated }) => {
   const [length, setLength] = useState(12);
   const [includeNumbers, setIncludeNumbers] = useState(true);
   const [includeSymbols, setIncludeSymbols] = useState(true);
   const [includeUppercase, setIncludeUppercase] = useState(true);
   const [includeLowercase, setIncludeLowercase] = useState(true);
   const [generatedPassword, setGeneratedPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleGeneratePassword = async () => {
+  const handleGenerate = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/generate-password`, {
         method: "POST",
@@ -25,28 +25,37 @@ const GeneratePassword = () => {
         }),
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        const data = await response.json();
+        setGeneratedPassword(data.password);
+        setMessage("Password generated successfully!");
+        onPasswordGenerated(data.password); // Send the generated password to AddPassword
+      } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Error generating password");
+        setMessage(errorData.message || "Error generating password.");
       }
-
-      const data = await response.json();
-      setGeneratedPassword(data.password);
-      setErrorMessage(""); // Clear any previous error message
     } catch (error) {
-      console.error("Error generating password:", error);
-      setGeneratedPassword(""); // Clear the previous password if an error occurs
-      setErrorMessage(error.message);
+      console.error("Error:", error);
+      setMessage("An error occurred while generating the password.");
+    }
+  };
+
+  const handleCopy = () => {
+    if (generatedPassword) {
+      navigator.clipboard.writeText(generatedPassword);
+      setMessage("Password copied to clipboard!");
     }
   };
 
   return (
-    <div className="generate-password">
+    <div className="password-generator">
       <h2>Generate Password</h2>
       <label>
         Length:
         <input
           type="number"
+          min="1"
+          max="128"
           value={length}
           onChange={(e) => setLength(Number(e.target.value))}
         />
@@ -85,13 +94,14 @@ const GeneratePassword = () => {
           Include Lowercase
         </label>
       </div>
-      <button onClick={handleGeneratePassword}>Generate Password</button>
+      <button onClick={handleGenerate}>Generate Password</button>
       {generatedPassword && (
-        <p>
-          <strong>Generated Password:</strong> {generatedPassword}
-        </p>
+        <div>
+          <p>Generated Password: {generatedPassword}</p>
+          <button onClick={handleCopy}>Copy to Clipboard</button>
+        </div>
       )}
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      {message && <p>{message}</p>}
     </div>
   );
 };

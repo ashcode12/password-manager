@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 
-const AddPassword = () => {
+const AddPassword = ({ prefilledPassword }) => {
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(prefilledPassword || "");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting to API:", process.env.REACT_APP_API_URL);
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/add-password`, {
@@ -19,7 +18,6 @@ const AddPassword = () => {
       });
 
       const data = await response.json();
-      console.log("Response from API:", data);
       setMessage(data.message);
     } catch (error) {
       console.error("Error:", error);
@@ -27,8 +25,15 @@ const AddPassword = () => {
     }
   };
 
+  // Update the password field if prefilledPassword changes
+  React.useEffect(() => {
+    if (prefilledPassword) {
+      setPassword(prefilledPassword);
+    }
+  }, [prefilledPassword]);
+
   return (
-    <div>
+    <div className="add-password">
       <h2>Add Password</h2>
       <form onSubmit={handleSubmit}>
         <label>

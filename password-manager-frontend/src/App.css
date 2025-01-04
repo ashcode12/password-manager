@@ -1,71 +1,92 @@
-/* General Styles */
 body {
-  font-family: "Roboto", sans-serif;
   margin: 0;
-  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
 }
 
 .App {
   text-align: center;
-  margin: 20px;
 }
 
-/* Navbar */
-.navbar {
+.App-header {
   background-color: #007bff;
   color: white;
-  padding: 10px 0;
-  margin-bottom: 20px;
-}
-
-.navbar h1 {
-  margin: 0;
-}
-
-/* Container */
-.container {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-/* Left and Right Columns */
-.left-column,
-.right-column {
-  width: 48%;
-}
-
-/* Card Component */
-.card {
-  background: white;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  font-size: 1.5em;
 }
 
-.card h2 {
-  margin-top: 0;
+.App-main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.App-section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 400px;
+  width: 100%;
+  text-align: left;
 }
 
 button {
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 button:hover {
   background-color: #0056b3;
 }
 
-input {
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+  width: 100%;
   padding: 8px;
-  width: calc(100% - 20px);
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin: 5px 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+h2 {
+  color: #007bff;
+  font-size: 1.25em;
+  margin-bottom: 15px;
+}
+
+button {
+  margin: 5px;
+}
+
+button.copy-btn {
+  background-color: #28a745;
+  margin-top: 5px;
+}
+
+button.copy-btn:hover {
+  background-color: #218838;
+}
+
+p.copy-status {
+  color: #28a745;
+  font-size: 0.9em;
+  margin-top: 5px;
 }

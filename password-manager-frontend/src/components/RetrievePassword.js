@@ -4,15 +4,14 @@ const RetrievePassword = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [copyStatus, setCopyStatus] = useState("");
 
   const handleSearch = async () => {
-    console.log("Retrieving password for:", name);
-
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/get-password/${name}`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/get-password/${name}`
+      );
       const data = await response.json();
-
-      console.log("Response from API:", data);
 
       if (response.ok) {
         setPassword(data.password);
@@ -27,6 +26,19 @@ const RetrievePassword = () => {
     }
   };
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(password).then(
+      () => {
+        setCopyStatus("Password copied to clipboard!");
+        setTimeout(() => setCopyStatus(""), 2000); // Clear status after 2 seconds
+      },
+      () => {
+        setCopyStatus("Failed to copy password.");
+        setTimeout(() => setCopyStatus(""), 2000);
+      }
+    );
+  };
+
   return (
     <div>
       <h2>Retrieve Password</h2>
@@ -39,7 +51,15 @@ const RetrievePassword = () => {
         />
       </label>
       <button onClick={handleSearch}>Search</button>
-      {password && <p>Password: {password}</p>}
+      {password && (
+        <div>
+          <p>
+            <strong>Password:</strong> {password}
+          </p>
+          <button onClick={handleCopy}>Copy to Clipboard</button>
+          {copyStatus && <p>{copyStatus}</p>}
+        </div>
+      )}
       {message && <p>{message}</p>}
     </div>
   );

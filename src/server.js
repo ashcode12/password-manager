@@ -151,10 +151,16 @@ app.post('/generate-password', (req, res) => {
   try {
     const { length, includeNumbers, includeSymbols, includeUppercase, includeLowercase } = req.body;
 
-    if (!length || length < 1 || length > 128) {
-      return res.status(400).json({ message: "Invalid length. Please provide a length between 1 and 128." });
+    // Validate length
+    if (!length || length < 1) {
+      return res.status(400).json({ message: "Invalid length. Length must be at least 1." });
     }
 
+    if (length > 128) {
+      return res.status(400).json({ message: "Invalid length. Length must not exceed 128." });
+    }
+
+    // Generate password
     const password = generatePassword({
       length,
       includeNumbers,
@@ -166,6 +172,7 @@ app.post('/generate-password', (req, res) => {
     res.status(200).json({ password });
   } catch (error) {
     console.error("Error generating password:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "An internal error occurred while generating the password." });
   }
 });
+

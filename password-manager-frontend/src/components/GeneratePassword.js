@@ -6,9 +6,10 @@ const GeneratePassword = () => {
   const [includeSymbols, setIncludeSymbols] = useState(true);
   const [includeUppercase, setIncludeUppercase] = useState(true);
   const [includeLowercase, setIncludeLowercase] = useState(true);
-  const [password, setPassword] = useState("");
+  const [generatedPassword, setGeneratedPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleGenerate = async () => {
+  const handleGeneratePassword = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/generate-password`, {
         method: "POST",
@@ -24,24 +25,30 @@ const GeneratePassword = () => {
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error generating password");
+      }
+
       const data = await response.json();
-      setPassword(data.password || "Error generating password");
+      setGeneratedPassword(data.password);
+      setErrorMessage(""); // Clear any previous error message
     } catch (error) {
-      console.error("Error:", error);
-      setPassword("An error occurred while generating the password.");
+      console.error("Error generating password:", error);
+      setGeneratedPassword(""); // Clear the previous password if an error occurs
+      setErrorMessage(error.message);
     }
   };
 
   return (
-    <div>
+    <div className="generate-password">
+      <h2>Generate Password</h2>
       <label>
         Length:
         <input
           type="number"
           value={length}
           onChange={(e) => setLength(Number(e.target.value))}
-          min="1"
-          max="128"
         />
       </label>
       <div>
@@ -78,8 +85,13 @@ const GeneratePassword = () => {
           Include Lowercase
         </label>
       </div>
-      <button onClick={handleGenerate}>Generate Password</button>
-      {password && <p><strong>Generated Password:</strong> {password}</p>}
+      <button onClick={handleGeneratePassword}>Generate Password</button>
+      {generatedPassword && (
+        <p>
+          <strong>Generated Password:</strong> {generatedPassword}
+        </p>
+      )}
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );
 };

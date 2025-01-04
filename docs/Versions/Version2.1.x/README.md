@@ -30,8 +30,8 @@
 
 1. Begin with redesigning the UI to match the new layout. (Version 2.1.1)
 2. Focus on integrating the password generator into the UI. (Version 2.1.2)
-3. Work incrementally, testing each change thoroughly before moving on. (Version 2.1.3)
-4. Document all updates after the changes are successfully implemented. (Version 2.1.4)
+3. Work incrementally, testing each change thoroughly before moving on.
+4. Document all updates after the changes are successfully implemented. 
 
 ---
 

@@ -6,8 +6,7 @@ const GeneratePassword = () => {
   const [includeSymbols, setIncludeSymbols] = useState(true);
   const [includeUppercase, setIncludeUppercase] = useState(true);
   const [includeLowercase, setIncludeLowercase] = useState(true);
-  const [generatedPassword, setGeneratedPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleGenerate = async () => {
     try {
@@ -26,72 +25,61 @@ const GeneratePassword = () => {
       });
 
       const data = await response.json();
-
-      if (response.ok) {
-        setGeneratedPassword(data.password);
-        setMessage("");
-      } else {
-        setGeneratedPassword("");
-        setMessage(data.message);
-      }
+      setPassword(data.password || "Error generating password");
     } catch (error) {
       console.error("Error:", error);
-      setMessage("An error occurred while generating the password.");
+      setPassword("An error occurred while generating the password.");
     }
   };
 
   return (
     <div>
-      <h2>Generate Password</h2>
       <label>
         Length:
         <input
           type="number"
           value={length}
+          onChange={(e) => setLength(Number(e.target.value))}
           min="1"
           max="128"
-          onChange={(e) => setLength(Number(e.target.value))}
         />
       </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={includeNumbers}
-          onChange={() => setIncludeNumbers(!includeNumbers)}
-        />
-        Include Numbers
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={includeSymbols}
-          onChange={() => setIncludeSymbols(!includeSymbols)}
-        />
-        Include Symbols
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={includeUppercase}
-          onChange={() => setIncludeUppercase(!includeUppercase)}
-        />
-        Include Uppercase
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={includeLowercase}
-          onChange={() => setIncludeLowercase(!includeLowercase)}
-        />
-        Include Lowercase
-      </label>
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            checked={includeNumbers}
+            onChange={(e) => setIncludeNumbers(e.target.checked)}
+          />
+          Include Numbers
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={includeSymbols}
+            onChange={(e) => setIncludeSymbols(e.target.checked)}
+          />
+          Include Symbols
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={includeUppercase}
+            onChange={(e) => setIncludeUppercase(e.target.checked)}
+          />
+          Include Uppercase
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={includeLowercase}
+            onChange={(e) => setIncludeLowercase(e.target.checked)}
+          />
+          Include Lowercase
+        </label>
+      </div>
       <button onClick={handleGenerate}>Generate Password</button>
-      {generatedPassword && (
-        <p>
-          <strong>Generated Password:</strong> {generatedPassword}
-        </p>
-      )}
-      {message && <p>{message}</p>}
+      {password && <p><strong>Generated Password:</strong> {password}</p>}
     </div>
   );
 };

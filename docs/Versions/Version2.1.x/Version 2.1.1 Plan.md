@@ -28,3 +28,9 @@ For this step, we will redesign the UI to make it more structured, visually appe
 
 #### App.js
 This will include the overall layout and structure for the new design.
+
+### Screenshot of final draft
+
+![Password Manager Version 2.1.1 Screenshot](docs/Versions/Version2.1.x/Images/Version%202.1.1.png)
+
+

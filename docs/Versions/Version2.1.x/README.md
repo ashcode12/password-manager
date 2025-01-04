@@ -2,7 +2,7 @@
 
 1. **Improve the UI**: 
    - Redesign the interface to make it more visually appealing and user-friendly.
-   - Implement a cleaner, structured layout resembling the outline in the screenshot, focusing on the following:
+   - Implement a cleaner, structured layout resembling the outline in the screenshot*, focusing on the following:
      - Sections for adding, retrieving, and listing passwords with distinct styling.
      - A "card-like" display for retrieved and listed items to enhance readability.
 
@@ -12,7 +12,7 @@
    - Display the generated password in a visually clear format with a "copy to clipboard" button.
 
 3. **UI Resembling the Screenshot**:
-   - Modify the layout for listing passwords to look similar to the cards in the screenshot:
+   - Modify the layout for listing passwords to look similar to the cards in the screenshot*:
      - Each entry (e.g., name, encrypted password) displayed in a separate card-like UI.
      - Allow for easy scrolling or categorization, if applicable.
 
@@ -32,3 +32,7 @@
 2. Focus on integrating the password generator into the UI. (Version 2.1.2)
 3. Work incrementally, testing each change thoroughly before moving on. (Version 2.1.3)
 4. Document all updates after the changes are successfully implemented. (Version 2.1.4)
+
+---
+
+*Screenshot is not included for privacy reasons (Datenschutz). The screenshot refers to an image of the layout of the 1Password desktop application. 

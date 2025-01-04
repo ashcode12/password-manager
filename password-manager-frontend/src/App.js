@@ -2,6 +2,7 @@ import React from "react";
 import AddPassword from "./components/AddPassword";
 import RetrievePassword from "./components/RetrievePassword";
 import ListPasswords from "./components/ListPasswords";
+import GeneratePassword from "./components/GeneratePassword";
 import ErrorBoundary from "./ErrorBoundary";
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
         </ErrorBoundary>
         <ErrorBoundary>
           <ListPasswords />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <GeneratePassword />
         </ErrorBoundary>
       </div>
     </ErrorBoundary>

@@ -4,29 +4,76 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'dev', url: 'https://github.com/ashcode12/password-manager.git'
+                git branch: 'main', url: 'https://github.com/ashcode12/password-manager.git'
             }
         }
-        stage('Build Backend') {
-            steps {
-                sh 'docker build -t password-manager-backend -f Dockerfile.backend .'
+
+        stage('Install Dependencies') {
+            parallel {
+                stage('Backend Dependencies') {
+                    steps {
+                        dir('src') {
+                            sh 'npm install'
+                        }
+                    }
+                }
+                stage('Frontend Dependencies') {
+                    steps {
+                        dir('password-manager-frontend') {
+                            sh 'npm install'
+                        }
+                    }
+                }
             }
         }
+
+        stage('Run Tests') {
+            parallel {
+                stage('Backend Tests') {
+                    steps {
+                        dir('src') {
+                            sh 'npm test'
+                        }
+                    }
+                }
+                stage('Frontend Tests') {
+                    steps {
+                        dir('password-manager-frontend') {
+                            sh 'npm test'
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Build Frontend') {
             steps {
-                sh 'docker build -t password-manager-frontend -f password-manager-frontend/Dockerfile.frontend .'
+                dir('password-manager-frontend') {
+                    sh 'npm run build'
+                }
             }
         }
-        stage('Run Tests') {
+
+        stage('Deploy') {
             steps {
-                sh 'docker run --rm password-manager-backend npm test'
+                script {
+                    echo 'Deploying backend and frontend...'
+                    // Backend deployment logic here (e.g., copy files to a server).
+                    // Frontend deployment using GitHub Pages:
+                    dir('password-manager-frontend') {
+                        sh 'npm run deploy'
+                    }
+                }
             }
         }
     }
 
     post {
-        always {
-            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }

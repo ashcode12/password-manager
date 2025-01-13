@@ -1,73 +1,93 @@
 pipeline {
     agent any
+
     environment {
-        // Add Node.js and npm paths to the environment
-        PATH = "/opt/homebrew/bin:$PATH"
+        NODE_VERSION = "14.x"
     }
+
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
                 checkout scm
+                echo "Code successfully checked out from ${env.GIT_BRANCH}"
             }
         }
+
         stage('Install Dependencies') {
             parallel {
                 stage('Backend Dependencies') {
                     steps {
                         dir('src') {
-                            sh 'npm install'
+                            sh '''
+                            echo "Installing backend dependencies..."
+                            npm install
+                            '''
                         }
                     }
                 }
                 stage('Frontend Dependencies') {
                     steps {
                         dir('password-manager-frontend') {
-                            sh 'npm install'
+                            sh '''
+                            echo "Installing frontend dependencies..."
+                            npm install
+                            '''
                         }
                     }
                 }
             }
         }
+
         stage('Run Tests') {
             parallel {
                 stage('Backend Tests') {
                     steps {
                         dir('src') {
-                            sh 'npm test'
+                            sh '''
+                            echo "Running backend tests..."
+                            npm test
+                            '''
                         }
                     }
                 }
                 stage('Frontend Tests') {
                     steps {
                         dir('password-manager-frontend') {
-                            sh 'npm test'
+                            sh '''
+                            echo "Running frontend tests..."
+                            npm test
+                            '''
                         }
                     }
                 }
             }
         }
+
         stage('Build Frontend') {
             steps {
                 dir('password-manager-frontend') {
-                    sh 'npm run build'
+                    sh '''
+                    echo "Building frontend..."
+                    npm run build
+                    '''
                 }
             }
         }
+
         stage('Deploy') {
             steps {
-                echo 'Deployment logic goes here'
+                echo "Deployment step placeholder"
+                // Add deployment steps here
             }
         }
     }
+
     post {
         always {
-            archiveArtifacts artifacts: '**/build/**'
-        }
-        success {
-            echo 'Pipeline executed successfully!'
+            echo "Pipeline execution complete."
         }
         failure {
-            echo 'Pipeline failed. Please check the logs.'
+            echo "Pipeline failed. Check the logs for details."
         }
     }
 }

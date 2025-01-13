@@ -1,13 +1,15 @@
 pipeline {
     agent any
-
+    environment {
+        // Add Node.js and npm paths to the environment
+        PATH = "/opt/homebrew/bin:$PATH"
+    }
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/ashcode12/password-manager.git'
+                checkout scm
             }
         }
-
         stage('Install Dependencies') {
             parallel {
                 stage('Backend Dependencies') {
@@ -26,7 +28,6 @@ pipeline {
                 }
             }
         }
-
         stage('Run Tests') {
             parallel {
                 stage('Backend Tests') {
@@ -45,7 +46,6 @@ pipeline {
                 }
             }
         }
-
         stage('Build Frontend') {
             steps {
                 dir('password-manager-frontend') {
@@ -53,24 +53,18 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy') {
             steps {
-                script {
-                    echo 'Deploying backend and frontend...'
-                    // Backend deployment logic here (e.g., copy files to a server).
-                    // Frontend deployment using GitHub Pages:
-                    dir('password-manager-frontend') {
-                        sh 'npm run deploy'
-                    }
-                }
+                echo 'Deployment logic goes here'
             }
         }
     }
-
     post {
+        always {
+            archiveArtifacts artifacts: '**/build/**'
+        }
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline executed successfully!'
         }
         failure {
             echo 'Pipeline failed. Please check the logs.'
